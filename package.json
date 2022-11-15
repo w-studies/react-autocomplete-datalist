@@ -1,15 +1,17 @@
 {
-  "name": "ra",
+  "name": "react-bootstrap-autocomplete",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "refresh": "rm -rf node_modules; yarn"
   },
   "dependencies": {
     "react": "^18.2.0",
+    "react-bootstrap": "^2.6.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
