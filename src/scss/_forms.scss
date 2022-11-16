@@ -1,0 +1,22 @@
+div.input-group-autocomplete {
+  position: relative;
+  &.focus {
+    div.datalist {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+  }
+  div.datalist {
+    transition: all 0.1s ease;
+    position: absolute;
+    max-height: 0;
+    overflow: hidden;
+    li {
+      opacity: 0.95;
+      cursor: pointer;
+    }
+    li:hover {
+      opacity: 1;
+    }
+  }
+}
