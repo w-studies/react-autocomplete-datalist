@@ -70,9 +70,22 @@ export const Stage = () => {
     })
   }
 
+  const clearFilters = (e: any) => {
+    setACUsersState(ACInitialState)
+    setACCitiesState(ACInitialState)
+    setUserQueryString('')
+    setCityQueryString('')
+    e.currentTarget.blur()
+    const rowFilters: any = document.querySelector('.row.filters')
+    for (const e of rowFilters.querySelectorAll('input, select')) {
+      e.value = ''
+      e.dispatchEvent(new Event('input', { bubbles: true }))
+    }
+  }
+
   return (
     <div className="container">
-      <div className="row">
+      <div className="row filters">
         <div className="col-auto">
           <pre>{JSON.stringify({ ACUsers }, null, 2)}</pre>
           <label>Autocomplete</label>
@@ -81,9 +94,7 @@ export const Stage = () => {
             input={{
               value: ACUsers.label,
               placeholder: ACUsers.placeholder,
-              onInput: ({ target: { value } }: any) => {
-                setACUsersState({ label: value })
-              }
+              onInput: (search: string) => setACUsersState({ label: search })
             }}
             onChange={({ id, name }: any) => {
               setACUsersState({ label: name, selected: { id, value: name } })
@@ -99,12 +110,12 @@ export const Stage = () => {
             input={{
               value: ACCities.label,
               placeholder: ACCities.placeholder,
+              onInput: (search: string) => setACCitiesState({ label: search })
+              /*
               onInput: ({ target: { value } }: any) => {
                 setACCitiesState({ label: value })
               },
-              onSearch: (e: any) => {
-                console.log('object :>> ', e)
-              }
+              */
             }}
             onChange={({ id, name }: any) => {
               setACCitiesState({ label: name, selected: { id, value: name } })
@@ -113,14 +124,7 @@ export const Stage = () => {
           />
         </div>
         <div className="col-auto ms-auto">
-          <button
-            className="btn rounded-pill btn-warning"
-            onClick={() => {
-              setACUsersState(ACInitialState)
-              setACCitiesState(ACInitialState)
-              setUserQueryString('')
-              setCityQueryString('')
-            }}>
+          <button className="btn rounded-pill btn-warning" onClick={clearFilters}>
             Clear Filters
           </button>
         </div>

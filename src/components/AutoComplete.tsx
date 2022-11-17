@@ -1,13 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
+import { useDebounce } from '../hooks/useDebounce'
 
-export const AutoComplete = ({ input, options, value, onChange, isLoading }: any) => {
+export const AutoComplete = ({ input, options, onChange, isLoading }: any) => {
+  const { value, onInput, ...inputProps } = input
+  const [typedTerm, setTypedTerm] = useState(value)
+  const debounce = useDebounce(onInput)
   const inputGroup: any = useRef()
+  const inputSearch: any = useRef()
+
+  const handleInput = ({ target: { value } }: any) => {
+    setTypedTerm(value)
+    debounce(value)
+  }
 
   const removeInputGroupFocus = () => inputGroup.current.classList.remove('focus')
 
   const handleOptionClick = ({ id, name }: any) => {
     onChange({ id, name })
     removeInputGroupFocus()
+    setTypedTerm(name)
   }
 
   const clickOutSide = (e: any) => {
@@ -26,9 +37,9 @@ export const AutoComplete = ({ input, options, value, onChange, isLoading }: any
   }
 
   useEffect(() => {
-    document.addEventListener('click', clickOutSide)
+    document.addEventListener('mousedown', clickOutSide)
     return () => {
-      document.removeEventListener('click', clickOutSide)
+      document.removeEventListener('mousedown', clickOutSide)
     }
   }, [])
 
@@ -36,14 +47,16 @@ export const AutoComplete = ({ input, options, value, onChange, isLoading }: any
     <div className="input-group-autocomplete" ref={inputGroup}>
       <input
         type="search"
-        {...input}
+        {...inputProps}
+        value={typedTerm}
+        onInput={handleInput}
         list="datalistOptions"
         className="form-select"
         onFocus={() => {
           inputGroup.current.classList.add('focus')
         }}
       />
-      <div className="datalist w-100">
+      <div className="datalist min-w-100">
         <ul className="list-group">
           {isLoading ? (
             <li className="list-group-item p-1 d-flex">Carregando...</li>
