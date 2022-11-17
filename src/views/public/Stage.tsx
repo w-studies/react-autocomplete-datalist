@@ -11,25 +11,63 @@ const ACInitialState = {
 }
 
 export const Stage = () => {
+  // lists
   const [usersList, setUsersList] = useState<any>({ data: { results: [] } })
+  const [citiesList, setCitiesList] = useState<any>({ data: { results: [] } })
+  // autoCompletes
   const [ACUsers, setACUsers] = useState(ACInitialState)
   const [ACCities, setACCities] = useState(ACInitialState)
+  // queryStrings
+  const [userQueryString, setUserQueryString] = useState('')
+  const [cityQueryString, setCityQueryString] = useState('')
+  // loading status
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false)
+  const [isLoadingCities, setIsLoadingCities] = useState(false)
 
   useEffect(() => {
-    fetchData()
+    fetchUsers()
     return () => {}
-  }, [])
+  }, [userQueryString])
 
-  async function fetchData() {
-    const data = await api.get(VITE_API_USERS)
-    setUsersList(data)
+  useEffect(() => {
+    fetchCities()
+    return () => {}
+  }, [cityQueryString])
+
+  async function fetchUsers() {
+    setIsLoadingUsers(true)
+    try {
+      const data = await api.get(VITE_API_USERS + userQueryString)
+      setUsersList(data)
+    } catch (error: any) {
+    } finally {
+      setIsLoadingUsers(false)
+    }
+  }
+  async function fetchCities() {
+    setIsLoadingCities(true)
+    try {
+      const data = await api.get(VITE_API_USERS + cityQueryString)
+      setCitiesList(data)
+    } catch (error: any) {
+    } finally {
+      setIsLoadingCities(false)
+    }
   }
 
   const setACUsersState = (obj: any) => {
-    setACUsers(old => ({ ...old, ...obj }))
+    setACUsers(old => {
+      const newData = { ...old, ...obj }
+      setUserQueryString('?name=' + newData.label)
+      return newData
+    })
   }
   const setACCitiesState = (obj: any) => {
-    setACCities(old => ({ ...old, ...obj }))
+    setACCities(old => {
+      const newData = { ...old, ...obj }
+      setCityQueryString('?name=' + newData.label)
+      return newData
+    })
   }
 
   return (
@@ -39,6 +77,7 @@ export const Stage = () => {
           <pre>{JSON.stringify({ ACUsers }, null, 2)}</pre>
           <label>Autocomplete</label>
           <AutoComplete
+            isLoading={isLoadingUsers}
             input={{
               value: ACUsers.label,
               placeholder: ACUsers.placeholder,
@@ -56,17 +95,21 @@ export const Stage = () => {
           <pre>{JSON.stringify({ ACCities }, null, 2)}</pre>
           <label>Autocomplete</label>
           <AutoComplete
+            isLoading={isLoadingCities}
             input={{
               value: ACCities.label,
               placeholder: ACCities.placeholder,
               onInput: ({ target: { value } }: any) => {
                 setACCitiesState({ label: value })
+              },
+              onSearch: (e: any) => {
+                console.log('object :>> ', e)
               }
             }}
             onChange={({ id, name }: any) => {
               setACCitiesState({ label: name, selected: { id, value: name } })
             }}
-            options={usersList.data.results}
+            options={citiesList.data.results}
           />
         </div>
         <div className="col-auto ms-auto">
@@ -75,6 +118,8 @@ export const Stage = () => {
             onClick={() => {
               setACUsersState(ACInitialState)
               setACCitiesState(ACInitialState)
+              setUserQueryString('')
+              setCityQueryString('')
             }}>
             Clear Filters
           </button>
