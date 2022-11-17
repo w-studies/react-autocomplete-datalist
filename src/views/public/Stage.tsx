@@ -71,10 +71,6 @@ export const Stage = () => {
   }
 
   const clearFilters = (e: any) => {
-    // setACUsersState(ACInitialState)
-    // setACCitiesState(ACInitialState)
-    // setUserQueryString('')
-    // setCityQueryString('')
     e.currentTarget.blur()
     const rowFilters: any = document.querySelector('.row.filters')
     for (const e of rowFilters.querySelectorAll('input, select')) {
