@@ -71,10 +71,10 @@ export const Stage = () => {
   }
 
   const clearFilters = (e: any) => {
-    setACUsersState(ACInitialState)
-    setACCitiesState(ACInitialState)
-    setUserQueryString('')
-    setCityQueryString('')
+    // setACUsersState(ACInitialState)
+    // setACCitiesState(ACInitialState)
+    // setUserQueryString('')
+    // setCityQueryString('')
     e.currentTarget.blur()
     const rowFilters: any = document.querySelector('.row.filters')
     for (const e of rowFilters.querySelectorAll('input, select')) {
@@ -94,7 +94,7 @@ export const Stage = () => {
             input={{
               value: ACUsers.label,
               placeholder: ACUsers.placeholder,
-              onInput: (search: string) => setACUsersState({ label: search })
+              onInput: (search: string) => setACUsersState({ ...ACInitialState, label: search })
             }}
             onChange={({ id, name }: any) => {
               setACUsersState({ label: name, selected: { id, value: name } })
@@ -110,12 +110,7 @@ export const Stage = () => {
             input={{
               value: ACCities.label,
               placeholder: ACCities.placeholder,
-              onInput: (search: string) => setACCitiesState({ label: search })
-              /*
-              onInput: ({ target: { value } }: any) => {
-                setACCitiesState({ label: value })
-              },
-              */
+              onInput: (search: string) => setACCitiesState({ ...ACInitialState, label: search })
             }}
             onChange={({ id, name }: any) => {
               setACCitiesState({ label: name, selected: { id, value: name } })
