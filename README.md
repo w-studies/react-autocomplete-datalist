@@ -1,4 +1,4 @@
-# Digcoin
+# React AutoComplete
 
 ## Getting started
 
